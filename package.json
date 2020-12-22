@@ -1,0 +1,22 @@
+{
+  "name": "blog_node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "connect_db.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@zhangxunying/jslib": "^1.0.0",
+    "mysql": "^2.18.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "module-alias": "^2.2.2"
+  },
+  "_moduleAliases": {
+    "@root"      : "."
+  }
+}
