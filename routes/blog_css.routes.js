@@ -5,9 +5,14 @@ const formidable = require('formidable');
 const newAndSave = require('@root/proxy/blog_css_proxy').newAndSave;
 const getCssRecords = require('@root/proxy/blog_css_proxy').getCssRecords;
 const delCssRecord = require('@root/proxy/blog_css_proxy').delCssRecord;
+const PARAMS = require('@root/config/config.json');
 
 blogCssRouter.get('/css', async function (req, res) {
-    res.send(await getCssRecords(req.query.start || 0, req.query.len || 10));
+    let r = {};
+    r.list = await getCssRecords(req.query.start || 0, req.query.len || 10);
+    r.htmlHost = PARAMS.host + ':2000';
+    r.pictureHost = PARAMS.host + ':2001';
+    res.send(r);
     res.end();
 });
 blogCssRouter.post('/css', async function (req, res) {
