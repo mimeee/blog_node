@@ -71,9 +71,14 @@ require('module-alias/register')
 // //---------------------------导出app实例供其他模块调用---------------------------
 // module.exports = app;
 
-const express = require('express')
-const app = express()
-const port = 4555
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const port = 4555;
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/blog', require('./routes/blog_css.routes'));
 

@@ -30,7 +30,7 @@ class BlogCssModel {
             return false;
         } 
         let sql = `DELETE FROM blog_css WHERE id=${p.id};`;
-        
+        writeLog('mysqlDeleteRecord', `[blog_css] - ${sql}`);
         return db.sql(sql);
     }
 

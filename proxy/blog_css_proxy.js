@@ -1,18 +1,25 @@
 const BlogCssModel = require('@root/models/index').BlogCssModel;
+const moveFile = require('../libs/moveFile');
 
 /**
  * 创建并保存一条css练习记录
  * @param {String} title css练习主题
  * @param {String} gif css效果展示gif图地址
+ * @param {Object} file gif文件
  * @return {Promise}
  */
-exports.newAndSave = function (title, gif) {
+exports.newAndSave = function (title, gif, file) {
     if (gif.length === 0 || title.length ===0) {
       return new Promise(resolve => resolve([]));
     }
-    return BlogCssModel.add({title, gif});
+    return new Promise ((reslove, reject) => {
+        moveFile(file.path, __dirname + '/../uploads/' + file.name).then((res) => {
+            reslove(BlogCssModel.add({title, gif}));
+        }).catch((err) => {
+            reject(new Promise(resolve => resolve(err)));
+        })
+    }); 
 };
-
 
 /**
  * 返回n条记录
