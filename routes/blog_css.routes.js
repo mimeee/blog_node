@@ -19,7 +19,7 @@ blogCssRouter.post('/css', async function (req, res) {
             res.status(500).json(err);
             return;
         }
-        if (fields.title === undefined || fields.gif === undefined) {
+        if (fields.title === undefined || fields.name === undefined) {
             res.status(500).send('Params Error');
             return;
         }
@@ -29,7 +29,7 @@ blogCssRouter.post('/css', async function (req, res) {
         }
         
         try {
-            let result = await newAndSave(fields.title, fields.gif, files.file);
+            let result = await newAndSave(fields.title, fields.name, files.file);
             res.json({
                 id: result.insertId
             });
