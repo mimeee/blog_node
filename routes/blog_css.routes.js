@@ -1,17 +1,22 @@
 var express = require('express');
 var blogCssRouter = express.Router();
 const formidable = require('formidable');
+const fs = require('fs');
 
 const newAndSave = require('@root/proxy/blog_css_proxy').newAndSave;
 const getCssRecords = require('@root/proxy/blog_css_proxy').getCssRecords;
 const delCssRecord = require('@root/proxy/blog_css_proxy').delCssRecord;
+const getCount = require('@root/proxy/blog_css_proxy').getCount;
 const PARAMS = require('@root/config/config.json');
 
 blogCssRouter.get('/css', async function (req, res) {
     let r = {};
-    r.list = await getCssRecords(req.query.start || 0, req.query.len || 10);
-    r.htmlHost = PARAMS.host + ':2000';
-    r.pictureHost = PARAMS.host + ':2001';
+    let start = Number(req.query.start) || 0;
+    let len = Number(req.query.len) || 10;
+    r.list = await getCssRecords(start * len, len);
+    r.total = await getCount();
+    r.htmlHost = "/blog/html/";
+    r.pictureHost = "/blog/image/";
     res.send(r);
     res.end();
 });
@@ -28,18 +33,24 @@ blogCssRouter.post('/css', async function (req, res) {
             res.status(500).send('Params Error');
             return;
         }
-        if (files.file === undefined) {
+
+        if (files.image === undefined || files.html === undefined) {
             res.status(500).send('File Error');
             return;
         }
         
         try {
-            let result = await newAndSave(fields.title, fields.name, files.file);
+            let result = await newAndSave({
+                title: fields.title, 
+                name: fields.name,
+                text: fields.text || "",
+            }, {imageSrc: files.image.path, htmlSrc: files.html.path});
             res.json({
                 id: result.insertId
             });
             res.end();
         } catch(err) {
+            console.log(err);
             res.status(500).send('Upload Error');
         }
     });
@@ -60,5 +71,38 @@ blogCssRouter.delete('/css', async function (req, res) {
     });
     res.end();
 });
+
+blogCssRouter.get('/image/:id', async function (req, res) {
+    const src = __dirname + '/../' + PARAMS.uploadSrc + '/cssBlog/' + req.params.id + '.gif';
+    const cs = fs.createReadStream(src);
+    res.setHeader('Content-Type','image/gif')
+    cs.on("data", chunk => {
+        res.write(chunk);
+    })
+    cs.on("end", () => {
+        res.status(200);
+        res.end();
+    })
+    cs.on("error", () => {
+        res.status(500).send('Error');
+    })
+});
+blogCssRouter.get('/html/:id', async function (req, res) {
+    const src = __dirname + '/../' + PARAMS.uploadSrc + '/cssBlog/' + req.params.id + '.html';
+    const cs = fs.createReadStream(src);
+    res.setHeader('Content-Type','text/html')
+    cs.on("data", chunk => {
+        res.write(chunk);
+    })
+    cs.on("end", () => {
+        res.status(200);
+        res.end();
+    })
+    cs.on("error", () => {
+        res.status(500).send('Error');
+    })
+});
+
+
 
 module.exports = blogCssRouter;

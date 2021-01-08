@@ -1,24 +1,28 @@
 const BlogCssModel = require('@root/models/index').BlogCssModel;
 const moveFile = require('../libs/moveFile');
-
+const PARAMS = require('@root/config/config.json')
 /**
  * 创建并保存一条css练习记录
  * @param {String} title css练习主题
  * @param {String} name css效果展示name图地址
- * @param {Object} file 图片文件
+ * @param {String} text css备注
+ * @param {String} imageSrc 上传图片临时地址
+ * @param {String} htmlSrc 上传html文件临时地址
  * @return {Promise}
  */
-exports.newAndSave = function (title, name, file) {
+exports.newAndSave = async function ({title, name, text}, {imageSrc, htmlSrc}) {
     if (name.length === 0 || title.length ===0) {
       return new Promise(resolve => resolve([]));
     }
-    return new Promise ((reslove, reject) => {
-        moveFile(file.path, __dirname + '/../uploads/' + file.name).then((res) => {
-            reslove(BlogCssModel.add({title, name}));
-        }).catch((err) => {
-            reject(new Promise(resolve => resolve(err)));
-        })
-    }); 
+    let result = await BlogCssModel.add({title, name, text});
+    try {
+        await moveFile(imageSrc, __dirname + '/../' + PARAMS.uploadSrc + '/cssBlog/' + result.insertId + '.gif');
+        await moveFile(htmlSrc, __dirname + '/../' + PARAMS.uploadSrc + '/cssBlog/' + result.insertId + '.html');
+        return result;
+    }catch(err){
+        BlogCssModel.delete({id: result.insertId})
+        throw err;
+    }
 };
 
 /**
@@ -33,11 +37,18 @@ exports.getCssRecords = function (start, len) {
     return BlogCssModel.select({start, end: len});
 };
 
+/**
+ * 获取总共条数
+ * @return {Promise}
+ */
+exports.getCount = async function () {
+    return JSON.parse(JSON.stringify(await BlogCssModel.count()))[0].total;
+};
+
 
 /**
- * 返回n条记录
- * @param {Number} start 从第几条记录开始
- * @param {Number} len  一共返回几条数据
+ * 删除记录
+ * @param {Number} id 
  * @return {Promise}
  */
 exports.delCssRecord = function (id) {

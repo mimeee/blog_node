@@ -9,7 +9,7 @@ class BlogCssModel {
         } else {
             if (!(p instanceof Array)) { p = [p]}
         }
-        let sql = `INSERT INTO blog_css (created_at, last_modified, title, name) VALUES `;
+        let sql = `INSERT INTO blog_css (created_at, last_modified, title, name, text) VALUES `;
         for (let i in p) {
             if (!(p[i].title) || !(p[i].name)) {
                 writeLog('mysql', `blog_css table insert fail; invalid parameter; ${JSON.stringify(p)}`);
@@ -18,7 +18,7 @@ class BlogCssModel {
         }
         sql += p.map((o, i) => {
             let t = new Date().valueOf();
-            return `(${t}, ${t}, "${o.title}", "${o.name}")`
+            return `(${t}, ${t}, "${o.title}", "${o.name}", "${o.text}")`
         }).join(',') + ';';
         
         return db.sql(sql);
@@ -35,11 +35,16 @@ class BlogCssModel {
     }
 
     select(p) {
-        let sql = `SELECT id, created_at, last_modified, title, name FROM blog_css`;
+        let sql = `SELECT id, created_at, last_modified, title, name, text FROM blog_css`;
         if (p && (p.start || p.start == 0)) {
             sql += ` LIMIT ${p.start}` + (p.end ? `, ${p.end}` : ''); 
         }
         sql += ';';
+        return db.sql(sql);
+    }
+
+    count() {
+        let sql = `select count(id) as total FROM blog_css`;
         return db.sql(sql);
     }
 }
