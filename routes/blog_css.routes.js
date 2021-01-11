@@ -16,7 +16,7 @@ blogCssRouter.get('/css', async function (req, res) {
     r.list = await getCssRecords(start * len, len);
     r.total = await getCount();
     r.htmlHost = "/blog/html/";
-    r.pictureHost = "/blog/image/";
+    r.pictureHost = "https://i.loli.net/";
     res.send(r);
     res.end();
 });
@@ -29,12 +29,12 @@ blogCssRouter.post('/css', async function (req, res) {
             res.status(500).json(err);
             return;
         }
-        if (fields.title === undefined || fields.name === undefined) {
+        if (fields.title === undefined || fields.image === undefined) {
             res.status(500).send('Params Error');
             return;
         }
-
-        if (files.image === undefined || files.html === undefined) {
+        
+        if (files.imageFile === undefined || files.htmlFile === undefined) {
             res.status(500).send('File Error');
             return;
         }
@@ -42,9 +42,9 @@ blogCssRouter.post('/css', async function (req, res) {
         try {
             let result = await newAndSave({
                 title: fields.title, 
-                name: fields.name,
+                image: fields.image,
                 text: fields.text || "",
-            }, {imageSrc: files.image.path, htmlSrc: files.html.path});
+            }, {imageSrc: files.imageFile.path, htmlSrc: files.htmlFile.path});
             res.json({
                 id: result.insertId
             });

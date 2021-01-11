@@ -1,14 +1,14 @@
-var http = require('http');
-const db = require("../models/base_model")();
+const path = "https://i.loli.net/2021/01/12/WtKTJ8e9FlL4URk.gif";
+const fs = require('fs');
 
+let o = getName(path)
 
-// http server 例子
-var server = http.createServer(function(req, res){
-    var url = res.url;
-    db.sql("select * from blog_css").then(d => {
-        res.end(JSON.stringify(d));
-    })
-    
-});
-
-server.listen(4200);
+fs.mkdirSync(__dirname + '/../uploads/cssBlog/' + o.imageDir);
+function getName (path) {
+    let o = new URL(path);
+    let dir = o.pathname.slice(1).split('/');
+    return {
+        imageName: dir.pop(),
+        imageDir: dir.join('-')
+    }
+}
