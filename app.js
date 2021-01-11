@@ -74,7 +74,7 @@ require('module-alias/register')
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = 4555;
+const port = 4200;
 
 app.all('*', (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
