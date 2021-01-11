@@ -64,7 +64,7 @@ blogCssRouter.delete('/css', async function (req, res) {
         return;
     }
 
-    let result = await delCssRecord(req.body.id);
+    let result = await delCssRecord(Number(req.body.id));
     res.json({
         code: result.affectedRows === 1 ? 0 : 1,
         msg: result.affectedRows === 1 ? 'success' : 'fail'
