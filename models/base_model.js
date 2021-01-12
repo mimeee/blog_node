@@ -6,11 +6,11 @@ const DB_CONFIG = require('@root/config/db_config.json');
 class DB {
     constructor() {
         this.db = null;
+        this.timer = null;
     }
 
     connect() {
         this.db = mysql.createConnection(DB_CONFIG);
-        this.db.connect();
     }
 
     end() {
@@ -20,9 +20,13 @@ class DB {
     sql(sql) {
         return new Promise( (resolve, reject) => {
             let that = this;
+            if (that.timer == null) {
+                that.delayEndDB();
+            }
             that.connect();
             that.db.query(sql,function (err, result) {
-                that.end();
+                clearTimeout(that.timer);
+                that.delayEndDB();
                 if(err){
                     writeLog('mysql', `[sql] - [${sql}]\n[DB ERROR] - ${err.message}\n\n`)
                     reject(`[DB ERROR] - ${err.message}`);
@@ -31,6 +35,14 @@ class DB {
             });
         })
         
+    }
+
+    delayEndDB() {
+        this.timer = setTimeout(() => {
+            this.timer = null;
+            console.log('关闭数据库');
+            this.db.end();
+        }, 2000);
     }
 }
 
