@@ -3,18 +3,6 @@ const mkdir = require('@root/libs/mkdir');
 const moveFile = require('@root/libs/moveFile');
 const PARAMS = require('@root/config/config.json')
 
-
-function parseImagePath(url, rootDir) {
-    let dir = new URL(url).pathname.slice(1).split('/');
-    let o = {
-      imageName: dir.pop(),
-      imageDir: dir.join('-')
-    };
-    let d = rootDir + o.imageDir;
-    mkdir(d);
-    return o.imageDir + '/' + o.imageName;
-  }
-
 /**
  * 创建并保存一条css练习记录
  * @param {String} title css练习主题
@@ -70,3 +58,15 @@ exports.delCssRecord = function (id) {
     if (typeof id !== "number") return false;
     return BlogCssModel.delete({id: id});
 };
+
+
+function parseImagePath(path, rootDir) {
+    let dir = path.slice(1).split('/');
+    let o = {
+      imageName: dir.pop(),
+      imageDir: dir.join('-')
+    };
+    let d = rootDir + o.imageDir;
+    mkdir(d);
+    return o.imageDir + '/' + o.imageName;
+}

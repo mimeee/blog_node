@@ -9,6 +9,8 @@ const delCssRecord = require('@root/proxy/blog_css_proxy').delCssRecord;
 const getCount = require('@root/proxy/blog_css_proxy').getCount;
 const PARAMS = require('@root/config/config.json');
 
+const PICTURE_HOST = "https://i.loli.net";
+
 blogCssRouter.get('/css', async function (req, res) {
     let r = {};
     let start = Number(req.query.start) || 0;
@@ -16,7 +18,7 @@ blogCssRouter.get('/css', async function (req, res) {
     r.list = await getCssRecords(start * len, len);
     r.total = await getCount();
     r.htmlHost = "/blog/html/";
-    r.pictureHost = "https://i.loli.net/";
+    r.pictureHost = PICTURE_HOST;
     res.send(r);
     res.end();
 });
@@ -42,7 +44,7 @@ blogCssRouter.post('/css', async function (req, res) {
         try {
             let result = await newAndSave({
                 title: fields.title, 
-                image: fields.image,
+                image: fields.image.replace(PICTURE_HOST, ""),
                 text: fields.text || "",
             }, {imageSrc: files.imageFile.path, htmlSrc: files.htmlFile.path});
             res.json({
