@@ -1,28 +1,32 @@
-var express = require('express');
-var blogCssRouter = express.Router();
-const formidable = require('formidable');
 const fs = require('fs');
+const path = require('path');
+var express = require('express');
 
-const newAndSave = require('@root/proxy/blog_css_proxy').newAndSave;
-const getCssRecords = require('@root/proxy/blog_css_proxy').getCssRecords;
-const delCssRecord = require('@root/proxy/blog_css_proxy').delCssRecord;
-const getCount = require('@root/proxy/blog_css_proxy').getCount;
-const PARAMS = require('@root/config/config.json');
+var practiceCssRouter = express.Router();
+const formidable = require('formidable');
 
-const PICTURE_HOST = "https://i.loli.net";
+const newAndSave = require('@root/proxy/practice_css_proxy').newAndSave;
+const getCssRecords = require('@root/proxy/practice_css_proxy').getCssRecords;
+const delCssRecord = require('@root/proxy/practice_css_proxy').delCssRecord;
+const getCount = require('@root/proxy/practice_css_proxy').getCount;
+const PARAMS = require('@root/config/practice_css_config.js');
 
-blogCssRouter.get('/css', async function (req, res) {
+const PICTURE_HOST = PARAMS.PICTURE_HOST;
+const HTML_FILE_PATH = PARAMS.HTML_FILE_PATH;
+const UPLOAD_FILE_PATH = PARAMS.UPLOAD_FILE_PATH;
+
+practiceCssRouter.get('/css', async function (req, res) {
     let r = {};
     let start = Number(req.query.start) || 0;
     let len = Number(req.query.len) || 10;
     r.list = await getCssRecords(start * len, len);
     r.total = await getCount();
-    r.htmlHost = "/blog/html/";
+    r.htmlHost = HTML_FILE_PATH;
     r.pictureHost = PICTURE_HOST;
     res.send(r);
     res.end();
 });
-blogCssRouter.post('/css', async function (req, res) {
+practiceCssRouter.post('/css', async function (req, res) {
     const form = formidable({
         multiples: true
     });
@@ -57,10 +61,10 @@ blogCssRouter.post('/css', async function (req, res) {
         }
     });
 });
-// blogCssRouter.put('/css', function() {
+// practiceCssRouter.put('/css', function() {
 //     console.log('put');
 // });
-blogCssRouter.delete('/css', async function (req, res) {
+practiceCssRouter.delete('/css', async function (req, res) {
     if (req.body.id === undefined) {
         res.status(500).send('Params Error');
         return;
@@ -74,8 +78,8 @@ blogCssRouter.delete('/css', async function (req, res) {
     res.end();
 });
 
-blogCssRouter.get('/image/:id', async function (req, res) {
-    const src = __dirname + '/../' + PARAMS.uploadSrc + '/cssBlog/' + req.params.id + '.gif';
+practiceCssRouter.get('/image/:id', async function (req, res) {
+    const src = UPLOAD_FILE_PATH + '/' + req.params.id + '.gif';
     const cs = fs.createReadStream(src);
     res.setHeader('Content-Type','image/gif')
     cs.on("data", chunk => {
@@ -89,8 +93,8 @@ blogCssRouter.get('/image/:id', async function (req, res) {
         res.status(500).send('Error');
     })
 });
-blogCssRouter.get('/html/:id', async function (req, res) {
-    const src = __dirname + '/../' + PARAMS.uploadSrc + '/cssBlog/' + req.params.id + '.html';
+practiceCssRouter.get('/html/:id', async function (req, res) {
+    const src = UPLOAD_FILE_PATH + '/' + req.params.id + '.html';
     const cs = fs.createReadStream(src);
     res.setHeader('Content-Type','text/html')
     cs.on("data", chunk => {
@@ -107,4 +111,4 @@ blogCssRouter.get('/html/:id', async function (req, res) {
 
 
 
-module.exports = blogCssRouter;
+module.exports = practiceCssRouter;

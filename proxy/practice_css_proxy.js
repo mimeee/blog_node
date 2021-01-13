@@ -1,7 +1,7 @@
-const BlogCssModel = require('@root/models/index').BlogCssModel;
+const practiceCssModel = require('@root/models/index').practiceCssModel;
 const mkdir = require('@root/libs/mkdir');
 const moveFile = require('@root/libs/moveFile');
-const PARAMS = require('@root/config/config.json')
+const PARAMS = require('@root/config/practice_css_config.js')
 
 /**
  * 创建并保存一条css练习记录
@@ -16,14 +16,14 @@ exports.newAndSave = async function ({title, image, text}, {imageSrc, htmlSrc}) 
     if (image.length === 0 || title.length ===0) {
       return new Promise(resolve => resolve([]));
     }
-    let result = await BlogCssModel.add({title, image, text});
+    let result = await practiceCssModel.add({title, image, text});
     try {
-        let rootDir = __dirname + '/../' + PARAMS.uploadSrc + '/cssBlog/';
+        let rootDir = PARAMS.UPLOAD_FILE_PATH;
         await moveFile(imageSrc, rootDir + parseImagePath(image, rootDir));
         await moveFile(htmlSrc, rootDir + result.insertId + '.html');
         return result;
     }catch(err){
-        BlogCssModel.delete({id: result.insertId})
+        practiceCssModel.delete({id: result.insertId})
         throw err;
     }
 };
@@ -37,7 +37,7 @@ exports.newAndSave = async function ({title, image, text}, {imageSrc, htmlSrc}) 
 exports.getCssRecords = function (start, len) {
     start = Number(start) || 0;
     len = Number(len) || 10;
-    return BlogCssModel.select({start, end: len});
+    return practiceCssModel.select({start, end: len});
 };
 
 /**
@@ -45,7 +45,7 @@ exports.getCssRecords = function (start, len) {
  * @return {Promise}
  */
 exports.getCount = async function () {
-    return JSON.parse(JSON.stringify(await BlogCssModel.count()))[0].total;
+    return JSON.parse(JSON.stringify(await practiceCssModel.count()))[0].total;
 };
 
 
@@ -56,7 +56,7 @@ exports.getCount = async function () {
  */
 exports.delCssRecord = function (id) {
     if (typeof id !== "number") return false;
-    return BlogCssModel.delete({id: id});
+    return practiceCssModel.delete({id: id});
 };
 
 

@@ -1,18 +1,18 @@
 const db = require('./base_model')();
 const writeLog = require('@root/libs/writeLog');
 
-class BlogCssModel {
+class practiceCssModel {
     add(p) {
         if (typeof p !== 'object' || p === null) {
-            writeLog('mysql', `blog_css table insert fail; invalid parameter: typeof p === ${typeof p};`);
+            writeLog('mysql', `practice_css table insert fail; invalid parameter: typeof p === ${typeof p};`);
             return false;
         } else {
             if (!(p instanceof Array)) { p = [p]}
         }
-        let sql = `INSERT INTO blog_css (created_at, last_modified, title, image_src, text) VALUES `;
+        let sql = `INSERT INTO practice_css (created_at, last_modified, title, image_src, text) VALUES `;
         for (let i in p) {
             if (!(p[i].title) || !(p[i].image)) {
-                writeLog('mysql', `blog_css table insert fail; invalid parameter; ${JSON.stringify(p)}`);
+                writeLog('mysql', `practice_css table insert fail; invalid parameter; ${JSON.stringify(p)}`);
                 return false;
             }
         }
@@ -26,16 +26,16 @@ class BlogCssModel {
 
     delete(p) {
         if (typeof p.id !== 'number') {
-            writeLog('mysql', `blog_css table delete fail; invalid parameter id;`);
+            writeLog('mysql', `practice_css table delete fail; invalid parameter id;`);
             return false;
         } 
-        let sql = `DELETE FROM blog_css WHERE id=${p.id};`;
-        writeLog('mysqlDeleteRecord', `[blog_css] - ${sql}`);
+        let sql = `DELETE FROM practice_css WHERE id=${p.id};`;
+        writeLog('mysqlDeleteRecord', `[practice_css] - ${sql}`);
         return db.sql(sql);
     }
 
     select(p) {
-        let sql = `SELECT id, created_at, last_modified, title, image_src, text FROM blog_css`;
+        let sql = `SELECT id, created_at, last_modified, title, image_src, text FROM practice_css`;
         if (p && (p.start || p.start == 0)) {
             sql += ` LIMIT ${p.start}` + (p.end ? `, ${p.end}` : ''); 
         }
@@ -44,10 +44,10 @@ class BlogCssModel {
     }
 
     count() {
-        let sql = `select count(id) as total FROM blog_css`;
+        let sql = `select count(id) as total FROM practice_css`;
         return db.sql(sql);
     }
 }
 
 
-module.exports = new BlogCssModel();
+module.exports = new practiceCssModel();

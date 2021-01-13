@@ -1,5 +1,5 @@
-const BlogCssModel = require('./blog_css_model');
+const practiceCssModel = require('./practice_css_model');
 const BlogTagModel = require('./blog_tag_model');
 
-exports.BlogCssModel = BlogCssModel;
+exports.practiceCssModel = practiceCssModel;
 exports.BlogTagModel = BlogTagModel;
