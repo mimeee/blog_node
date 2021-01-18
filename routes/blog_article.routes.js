@@ -14,6 +14,7 @@ const PARAMS = require('@root/config/blog_article_config.js');
 // const updated = require('@root/proxy/blog_article_proxy').updated;
 
 const routePath = '/article';
+const htmlPath = `${routePath}/html/:id`;
 
 BlogTagRouter.post(routePath, async function (req, res) {
     const form = formidable({
@@ -59,13 +60,20 @@ BlogTagRouter.get(`${routePath}`, async function(req, res) {
     let len = Number(req.query.len) || 10;
     r.list = await getList(start * len, len);
     r.total = await getCount();
-    r.getArticlePath = `${routePath}/:id`;
+    r.getArticlePath = htmlPath;
     res.send(r);
     res.end();
 });
 
-
 BlogTagRouter.get(`${routePath}/:id`, async function (req, res) {
+    if (isNaN(req.params.id)) {
+        res.status(500).send('Param Error');
+    }
+    res.json(JSON.parse(JSON.stringify(await getArticleById(Number(req.params.id))))[0]);
+    res.end();
+});
+
+BlogTagRouter.get(htmlPath, async function (req, res) {
     if (isNaN(req.params.id)) {
         res.status(500).send('Param Error');
     }
