@@ -4,7 +4,7 @@ const writeLog = require('@root/libs/writeLog');
 class practiceCssModel {
     add(p) {
         if (typeof p !== 'object' || p === null) {
-            writeLog('mysql', `practice_css table insert fail; invalid parameter: typeof p === ${typeof p};`);
+            writeLog('mysql', `[practice_css] - insert fail; invalid parameter: typeof p === ${typeof p};`);
             return false;
         } else {
             if (!(p instanceof Array)) { p = [p]}
@@ -12,7 +12,7 @@ class practiceCssModel {
         let sql = `INSERT INTO practice_css (created_at, last_modified, title, image_src, text) VALUES `;
         for (let i in p) {
             if (!(p[i].title) || !(p[i].image)) {
-                writeLog('mysql', `practice_css table insert fail; invalid parameter; ${JSON.stringify(p)}`);
+                writeLog('mysql', `[practice_css] - insert fail; invalid parameter; ${JSON.stringify(p)}`);
                 return false;
             }
         }
@@ -26,7 +26,7 @@ class practiceCssModel {
 
     delete(p) {
         if (typeof p.id !== 'number') {
-            writeLog('mysql', `practice_css table delete fail; invalid parameter id;`);
+            writeLog('mysql', `[practice_css] - delete fail; invalid parameter id;`);
             return false;
         } 
         let sql = `DELETE FROM practice_css WHERE id=${p.id};`;
