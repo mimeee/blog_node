@@ -1,23 +1,22 @@
 var express = require('express');
 var BlogTagRouter = express.Router();
-const fs = require('fs');
 
-const newAndSave = require('@root/proxy/blog_tag_proxy').newAndSave;
-const updated = require('@root/proxy/blog_tag_proxy').updated;
-const getTags = require('@root/proxy/blog_tag_proxy').getTags;
-const getCount = require('@root/proxy/blog_tag_proxy').getCount;
+const newAndSave = require('@root/proxy/blog_article_tag_proxy').newAndSave;
+const updated = require('@root/proxy/blog_article_tag_proxy').updated;
+const getTags = require('@root/proxy/blog_article_tag_proxy').getTags;
+const getCount = require('@root/proxy/blog_article_tag_proxy').getCount;
 const PARAMS = require('@root/config/config.json');
 
-const PICTURE_HOST = "https://i.loli.net";
+const path = '/blog/article/:id';
 
-BlogTagRouter.get('/tags', async function (req, res) {
+BlogTagRouter.get(path, async function (req, res) {
     let r = {};
     r.list = await getTags();
     r.total = await getCount();
     res.send(r);
     res.end();
 });
-BlogTagRouter.post('/tags', async function (req, res) {
+BlogTagRouter.post(path, async function (req, res) {
     if (!req.body.title) {
         res.status(500).send('Params Error');
         return;
@@ -29,7 +28,7 @@ BlogTagRouter.post('/tags', async function (req, res) {
     res.end();
 });
 
-BlogTagRouter.put('/tags', async function(req, res) {
+BlogTagRouter.put(path, async function(req, res) {
     if ((!req.body.title) || (!req.body.id)) {
         res.status(500).send('Params Error');
         return;

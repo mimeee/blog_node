@@ -1,18 +1,18 @@
 const db = require('./base_model')();
 const writeLog = require('@root/libs/writeLog');
 
-class BlogTagModel {
+class BlogArticleModel {
     add(p) {
         if (typeof p !== 'object' || p === null) {
-            writeLog('mysql', `blog_tag table insert fail; invalid parameter: typeof p === ${typeof p};`);
+            writeLog('mysql', `blog_article_tag table insert fail; invalid parameter: typeof p === ${typeof p};`);
             return false;
         } else {
             if (!(p instanceof Array)) { p = [p]}
         }
-        let sql = `INSERT INTO blog_tag (title) VALUES `;
+        let sql = `INSERT INTO blog_article_tag (title) VALUES `;
         for (let i in p) {
             if (!p[i].title) {
-                writeLog('mysql', `blog_tag table insert fail; invalid parameter; ${JSON.stringify(p)}`);
+                writeLog('mysql', `blog_article_tag table insert fail; invalid parameter; ${JSON.stringify(p)}`);
                 return false;
             }
         }
@@ -25,7 +25,7 @@ class BlogTagModel {
     }
 
     select() {
-        let sql = `SELECT id, title FROM blog_tag`;
+        let sql = `SELECT id, title FROM blog_article_tag`;
         return db.sql(sql);
     }
 
@@ -34,15 +34,15 @@ class BlogTagModel {
             writeLog('mysql', `title or id is invaild`);
             return false;
         }
-        let sql = `UPDATE blog_tag SET title="${title}" WHERE id=${id};`;
+        let sql = `UPDATE blog_article_tag SET title="${title}" WHERE id=${id};`;
         return db.sql(sql);
     }
 
     count() {
-        let sql = `select count(id) as total FROM blog_tag`;
+        let sql = `select count(id) as total FROM blog_article_tag`;
         return db.sql(sql);
     }
 }
 
 
-module.exports = new BlogTagModel();
+module.exports = new BlogArticleModel();

@@ -90,6 +90,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/practice', require('./routes/practice_css.routes'));
-app.use('/blog', require('./routes/blog_tag.routes'));
+app.use('/api', require('./routes/blog_article_tag.routes'));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

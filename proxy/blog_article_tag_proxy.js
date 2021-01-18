@@ -1,4 +1,4 @@
-const BlogTagModel = require('@root/models/index').BlogTagModel;
+const BlogArticleTagModel = require('@root/models/index').BlogArticleTagModel;
 
 /**
  * 创建并保存一条记录
@@ -9,7 +9,7 @@ exports.newAndSave = async function (title) {
     if (!title) {
       return new Promise(resolve => resolve([]));
     }
-    return await BlogTagModel.add({title});
+    return await BlogArticleTagModel.add({title});
 };
 
 /**
@@ -22,7 +22,7 @@ exports.updated = async function ({title, id}) {
     if (!title || !id) {
       return new Promise(resolve => resolve([]));
     }
-    let r = await BlogTagModel.updated({title, id})
+    let r = await BlogArticleTagModel.updated({title, id})
     return r.affectedRows === 1;
 };
 
@@ -31,7 +31,7 @@ exports.updated = async function ({title, id}) {
  * @return {Promise}
  */
 exports.getTags = function () {
-    return BlogTagModel.select();
+    return BlogArticleTagModel.select();
 };
 
 /**
@@ -39,6 +39,6 @@ exports.getTags = function () {
  * @return {Promise}
  */
 exports.getCount = async function () {
-    return JSON.parse(JSON.stringify(await BlogTagModel.count()))[0].total;
+    return JSON.parse(JSON.stringify(await BlogArticleTagModel.count()))[0].total;
 };
 
