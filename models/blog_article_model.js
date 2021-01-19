@@ -9,7 +9,7 @@ class BlogArticleModel {
         } else {
             if (!(p instanceof Array)) { p = [p]}
         }
-        let sql = `INSERT INTO blog_article (title, tag, file, created_at, last_modified) VALUES `;
+        let sql = `INSERT INTO blog_article (title, tagId, file, created_at, last_modified) VALUES `;
         for (let i in p) {
             if ((!p[i].title) || (!p[i].file)) {
                 writeLog('mysql', `[blog_article] - table insert fail; invalid parameter; ${JSON.stringify(p)}`);
@@ -34,7 +34,7 @@ class BlogArticleModel {
     }
 
     select(p) {
-        let sql = `SELECT id,title,tag,file,created_at,last_modified FROM blog_article`;
+        let sql = `SELECT blog_article.id,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id`;
         if (p && (p.start || p.start == 0)) {
             sql += ` LIMIT ${p.start}` + (p.end ? `, ${p.end}` : ''); 
         }
@@ -44,7 +44,13 @@ class BlogArticleModel {
 
     where(condition) {
         if (!condition) return [];
-        let sql = `SELECT id,title,tag,file,created_at,last_modified FROM blog_article where ${condition};`;
+        let a = [];
+        Object.keys(condition).forEach(key => {
+            a.push(`blog_article.${key}=${condition[key]}`)
+        })
+        let sql = `SELECT blog_article.id,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id WHERE `;
+        sql += a.join("AND");
+        sql += ";";
         return db.sql(sql);
     }
 
@@ -61,7 +67,7 @@ class BlogArticleModel {
         let sql = "UPDATE blog_article SET ";
         let arr = [];
         title ? arr.push(`title="${title}"`) : "";
-        tag ? arr.push(`tag="${tag}"`) : "";
+        tagId ? arr.push(`tagId="${tag}"`) : "";
         file ? arr.push(`file="${file}"`) : "";
         if (arr.length === 0) return [];
         arr.push(`last_modified="${new Date().valueOf()}"`)

@@ -9,7 +9,7 @@ class BlogArticleTagModel {
         } else {
             if (!(p instanceof Array)) { p = [p]}
         }
-        let sql = `INSERT INTO blog_article_tag (title) VALUES `;
+        let sql = `INSERT INTO blog_article_tag (name) VALUES `;
         for (let i in p) {
             if (!p[i].title) {
                 writeLog('mysql', `[blog_article_tag] - insert fail; invalid parameter; ${JSON.stringify(p)}`);
@@ -25,16 +25,16 @@ class BlogArticleTagModel {
     }
 
     select() {
-        let sql = `SELECT id, title FROM blog_article_tag`;
+        let sql = `SELECT id, name FROM blog_article_tag`;
         return db.sql(sql);
     }
 
     updated({title, id}) {
         if (!title || !id) {
-            writeLog('mysql', `[blog_article_tag] - title or id is invaild`);
+            writeLog('mysql', `[blog_article_tag] - name or id is invaild`);
             return false;
         }
-        let sql = `UPDATE blog_article_tag SET title="${title}" WHERE id=${id};`;
+        let sql = `UPDATE blog_article_tag SET name="${title}" WHERE id=${id};`;
         return db.sql(sql);
     }
 

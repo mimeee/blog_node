@@ -10,6 +10,9 @@
   "license": "ISC",
   "devDependencies": {
     "@zhangxunying/jslib": "^1.0.0",
+    "highlight": "^0.2.4",
+    "highlight.js": "^10.5.0",
+    "marked": "^1.2.7",
     "mysql": "^2.18.1"
   },
   "dependencies": {

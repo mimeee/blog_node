@@ -2,7 +2,7 @@ var express = require('express');
 var BlogTagRouter = express.Router();
 const formidable = require('formidable');
 const path = require('path');
-const fs = require('fs');
+const md2html = require('@root/libs/md2html');
 
 const newAndSave = require('@root/proxy/blog_article_proxy').newAndSave;
 const getCount = require('@root/proxy/blog_article_proxy').getCount;
@@ -79,18 +79,10 @@ BlogTagRouter.get(htmlPath, async function (req, res) {
     }
     let item = JSON.parse(JSON.stringify(await getArticleById(Number(req.params.id))));
     let filePath = PARAMS.UPLOAD_FILE_PATH + '/' + item[0].file;
-    const cs = fs.createReadStream(filePath);
-    res.setHeader('Content-Type','text/html')
-    cs.on("data", chunk => {
-        res.write(chunk);
-    })
-    cs.on("end", () => {
-        res.status(200);
-        res.end();
-    })
-    cs.on("error", (error) => {
-        res.status(500).send('Error');
-    })
+    let html = await md2html(filePath);
+    res.setHeader('Content-Type','text/html');
+    res.send(html);
+    res.end();
 });
 
 BlogTagRouter.put(`${routePath}/:id`, async function(req, res) {
@@ -124,7 +116,6 @@ BlogTagRouter.put(`${routePath}/:id`, async function(req, res) {
             let r = await updated(o);
             res.send({errno: r ? 0 : 1, msg: r ? 'ok' : 'fail'});
         } catch(err) {
-            console.log(err);
             res.status(500).send('Upload Error');
         }
     });

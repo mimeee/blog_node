@@ -104,7 +104,7 @@ exports.deleteArticle = function (id) {
  */
 exports.getArticleById = function (id) {
     if (typeof id !== "number") return false;
-    return BlogArticleModel.where(`id=${id}`);
+    return BlogArticleModel.where({id});
 };
 
 
