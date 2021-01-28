@@ -93,7 +93,7 @@ practiceCssRouter.get('/image/:id', async function (req, res) {
         res.status(500).send('Error');
     })
 });
-practiceCssRouter.get('/html/:id', async function (req, res) {
+practiceCssRouter.get(HTML_FILE_PATH, async function (req, res) {
     const src = UPLOAD_FILE_PATH + '/' + req.params.id + '.html';
     const cs = fs.createReadStream(src);
     res.setHeader('Content-Type','text/html')
