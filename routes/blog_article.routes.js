@@ -60,7 +60,7 @@ BlogTagRouter.get(`${routePath}`, async function(req, res) {
     let len = Number(req.query.len) || 10;
     r.list = await getList(start * len, len);
     r.total = await getCount();
-    r.getArticlePath = htmlPath;
+    r.getArticlePath = "/blog" + htmlPath;
     res.send(r);
     res.end();
 });

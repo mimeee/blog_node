@@ -11,6 +11,7 @@ const PARAMS = require('@root/config/config.json');
 const PICTURE_HOST = "https://i.loli.net";
 const path = '/blog/article/tags';
 BlogTagRouter.get(path, async function (req, res) {
+    console.log(123)
     let r = {};
     r.list = await getTags();
     r.total = await getCount();

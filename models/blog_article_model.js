@@ -34,7 +34,7 @@ class BlogArticleModel {
     }
 
     select(p) {
-        let sql = `SELECT blog_article.id,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id`;
+        let sql = `SELECT blog_article.id,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id ORDER BY blog_article.created_at DESC `;
         if (p && (p.start || p.start == 0)) {
             sql += ` LIMIT ${p.start}` + (p.end ? `, ${p.end}` : ''); 
         }

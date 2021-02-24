@@ -21,7 +21,7 @@ practiceCssRouter.get('/css', async function (req, res) {
     let len = Number(req.query.len) || 10;
     r.list = await getCssRecords(start * len, len);
     r.total = await getCount();
-    r.htmlHost = HTML_FILE_PATH;
+    r.htmlHost = "/practice" + HTML_FILE_PATH;
     r.pictureHost = PICTURE_HOST;
     res.send(r);
     res.end();
