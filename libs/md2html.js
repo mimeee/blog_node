@@ -57,6 +57,7 @@ function m (fileStream, option) {
   <meta charset="UTF-8">
   <title>Document</title>
   <link href="http://mimee.top/libs/markdown.min.css" rel="stylesheet">
+  <link href="http://mimee.top/libs/mymarkdown.css" rel="stylesheet">
 </head>
 <body class="markdown-body">
   ${html}
