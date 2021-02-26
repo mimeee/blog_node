@@ -56,9 +56,13 @@ BlogTagRouter.post(routePath, async function (req, res) {
 
 BlogTagRouter.get(`${routePath}`, async function(req, res) {
     let r = {};
+
     let start = Number(req.query.start) || 0;
     let len = Number(req.query.len) || 10;
-    r.list = await getList(start * len, len);
+    let tag = req.query.tag || "";
+    let title = req.query.title || "";
+
+    r.list = await getList(start * len, len, tag, title);
     r.total = await getCount();
     r.getArticlePath = "/blog" + htmlPath;
     res.send(r);

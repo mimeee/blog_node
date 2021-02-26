@@ -71,12 +71,17 @@ exports.updated = async function ({title, tag, markdownFile, id}) {
  * 返回n条记录
  * @param {Number} start 从第几条记录开始
  * @param {Number} len  一共返回几条数据
+ * @param {Number} tag  文章分类
+ * @param {Number} title  文章标题关键字
  * @return {Promise}
  */
-exports.getList = function (start, len) {
+exports.getList = function (start, len, tag, title) {
     start = Number(start) || 0;
     len = Number(len) || 10;
-    return BlogArticleModel.select({start, end: len});
+    let obj = {start, end: len};
+    if (tag) obj.tag = tag;
+    if (title) obj.title = title;
+    return BlogArticleModel.select(obj);
 };
 
 /**
@@ -98,7 +103,7 @@ exports.deleteArticle = function (id) {
 };
 
 /**
- * 删除记录
+ * 根据id获取记录
  * @param {Number} id 
  * @return {Promise}
  */
