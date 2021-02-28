@@ -78,7 +78,7 @@ class BlogArticleModel {
         let sql = "UPDATE blog_article SET ";
         let arr = [];
         title ? arr.push(`title="${title}"`) : "";
-        tagId ? arr.push(`tagId="${tag}"`) : "";
+        tag ? arr.push(`tagId="${tag}"`) : "";
         file ? arr.push(`file="${file}"`) : "";
         if (arr.length === 0) return [];
         arr.push(`last_modified="${new Date().valueOf()}"`)

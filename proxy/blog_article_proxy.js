@@ -36,9 +36,6 @@ exports.newAndSave = async function ({title, tag, markdownFile}) {
  * @return {Promise}
  */
 exports.updated = async function ({title, tag, markdownFile, id}) {
-    if (title.length === 0) {
-      return new Promise(resolve => resolve([]));
-    }
     let o = {};
     let oFile;
     if (markdownFile) {
