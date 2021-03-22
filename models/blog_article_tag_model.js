@@ -29,6 +29,11 @@ class BlogArticleTagModel {
         return db.sql(sql);
     }
 
+    where(name) {
+        let sql = `SELECT id, name FROM blog_article_tag WHERE name="${name}"`;
+        return db.sql(sql);
+    }
+
     updated({title, id}) {
         if (!title || !id) {
             writeLog('mysql', `[blog_article_tag] - name or id is invaild`);
@@ -38,11 +43,20 @@ class BlogArticleTagModel {
         return db.sql(sql);
     }
 
+    delete(p) {
+        if (typeof p.id !== 'number') {
+            writeLog('mysql', `[blog_article_tag] - delete fail; invalid parameter id;`);
+            return false;
+        } 
+        let sql = `DELETE FROM blog_article_tag WHERE id=${p.id};`;
+        writeLog('mysqlDeleteRecord', `[blog_article_tag] - ${sql}`);
+        return db.sql(sql);
+    }
+
     count() {
         let sql = `select count(id) as total FROM blog_article_tag`;
         return db.sql(sql);
     }
 }
-
 
 module.exports = new BlogArticleTagModel();

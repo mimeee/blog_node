@@ -78,7 +78,7 @@ const port = 4200;
 
 app.all('*', (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header("X-Powered-By",' 3.2.1')
     res.header("Content-Type", "application/json;charset=utf-8");
@@ -89,7 +89,7 @@ app.all('*', (req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use('/practice', require('./routes/practice_css.routes'));
+// app.use('/practice', require('./routes/practice_css.routes'));
 app.use('/api', require('./routes/blog_article_tag.routes'));
 app.use('/blog', require('./routes/blog_article.routes'));
 

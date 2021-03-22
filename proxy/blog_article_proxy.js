@@ -13,12 +13,12 @@ const PARAMS = require('@root/config/blog_article_config.js');
  * @param {String} markdownFile 上传文件的信息
  * @return {Promise}
  */
-exports.newAndSave = async function ({title, tag, markdownFile}) {
+exports.newAndSave = async function ({title, tag, desc, markdownFile}) {
     if (title.length === 0) {
       return new Promise(resolve => resolve([]));
     }
     let oFile = parsePath(PARAMS.UPLOAD_FILE_PATH, markdownFile.extname);
-    let result = await BlogArticleModel.add({title, tag, file: oFile.relativePath});
+    let result = await BlogArticleModel.add({title, tag, desc, file: oFile.relativePath});
     try {
         await moveFile(markdownFile.path, oFile.absolutePath);
         return result;

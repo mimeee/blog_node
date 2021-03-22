@@ -6,12 +6,12 @@ const newAndSave = require('@root/proxy/blog_article_tag_proxy').newAndSave;
 const updated = require('@root/proxy/blog_article_tag_proxy').updated;
 const getTags = require('@root/proxy/blog_article_tag_proxy').getTags;
 const getCount = require('@root/proxy/blog_article_tag_proxy').getCount;
+const deleteTag = require('@root/proxy/blog_article_tag_proxy').delete;
 const PARAMS = require('@root/config/config.json');
 
 const PICTURE_HOST = "https://i.loli.net";
 const path = '/blog/article/tags';
 BlogTagRouter.get(path, async function (req, res) {
-    console.log(123)
     let r = {};
     r.list = await getTags();
     r.total = await getCount();
@@ -40,6 +40,17 @@ BlogTagRouter.put(path, async function(req, res) {
     res.end();
 });
 
+BlogTagRouter.delete(path, async function(req, res) {
+    let id = req.query.id;
+    if (!id) {
+        res.send({errno: 1, msg: 'fail'});
+        res.end();
+    }
+    let r = await deleteTag(id);
+    r = !(r.affectedRows === 0);
+    res.send({errno: r ? 0 : 1, msg: r ? 'ok' : 'fail'});
+    res.end();
+});
 
 
 

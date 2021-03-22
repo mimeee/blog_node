@@ -1,4 +1,5 @@
 const BlogArticleTagModel = require('@root/models/index').BlogArticleTagModel;
+const BlogArticleModel = require("@root/models/blog_article_model");
 
 /**
  * 创建并保存一条记录
@@ -9,8 +10,29 @@ exports.newAndSave = async function (title) {
     if (!title) {
       return new Promise(resolve => resolve([]));
     }
-    return await BlogArticleTagModel.add({title});
+    let r = await BlogArticleTagModel.where(title);
+    if (r.length === 0) {
+      return await BlogArticleTagModel.add({title});
+    } else {
+      return new Promise(resolve => resolve([]));
+    }
 };
+
+/**
+ * 根据id删除一条记录
+ * @param {number} id 
+ */
+exports.delete = async function (id) {
+  if (!Number(id)) {
+    return new Promise(resolve => resolve([]));
+  }
+  let r = await BlogArticleModel.where({tagId: Number(id)});
+  if (r.length === 0) {
+    return await BlogArticleTagModel.delete({id: Number(id)});
+  } else {
+    return new Promise(resolve => resolve({affectedRows: 0}));
+  }
+}
 
 /**
  * 根据id更新一条信息
