@@ -9,7 +9,7 @@ class BlogArticleModel {
         } else {
             if (!(p instanceof Array)) { p = [p]}
         }
-        let sql = `INSERT INTO blog_article (title, tagId, file, desc, created_at, last_modified) VALUES `;
+        let sql = `INSERT INTO blog_article (title, tagId, file, comment, created_at, last_modified) VALUES `;
         for (let i in p) {
             if ((!p[i].title) || (!p[i].file)) {
                 writeLog('mysql', `[blog_article] - table insert fail; invalid parameter; ${JSON.stringify(p)}`);
@@ -29,12 +29,13 @@ class BlogArticleModel {
             return false;
         } 
         let sql = `DELETE FROM blog_article WHERE id=${p.id};`;
+        console.log(sql);
         writeLog('mysqlDeleteRecord', `[blog_article] - ${sql}`);
         return db.sql(sql);
     }
 
     select(p) {
-        let sql = `SELECT blog_article.id,blog_article.desc,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id`;
+        let sql = `SELECT blog_article.id,blog_article.comment,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id`;
 
         if (p.tag) {
             sql += ` WHERE blog_article.tagId = ${p.tag}`;
@@ -59,7 +60,7 @@ class BlogArticleModel {
         Object.keys(condition).forEach(key => {
             a.push(`blog_article.${key}=${condition[key]}`)
         })
-        let sql = `SELECT blog_article.id,blog_article.desc,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id WHERE `;
+        let sql = `SELECT blog_article.id,blog_article.comment,blog_article.title,blog_article.tagId,blog_article.file,blog_article.created_at,blog_article.last_modified,blog_article_tag.name as tagName  FROM blog_article LEFT JOIN blog_article_tag ON blog_article.tagId = blog_article_tag.id WHERE `;
         sql += a.join("AND");
         sql += ";";
         return db.sql(sql);
@@ -70,7 +71,7 @@ class BlogArticleModel {
         return db.sql(sql);
     }
 
-    updated({title, tag, file, id}) {
+    updated({title, tag, file, desc, id}) {
         if (!id) {
             writeLog('mysql', `[blog_article] - title or id is invaild`);
             return false;
@@ -80,7 +81,8 @@ class BlogArticleModel {
         title ? arr.push(`title="${title}"`) : "";
         tag ? arr.push(`tagId="${tag}"`) : "";
         file ? arr.push(`file="${file}"`) : "";
-        file ? arr.push(`desc="${desc}"`) : "";
+        desc ? arr.push(`comment="${desc}"`) : "";
+
         if (arr.length === 0) return [];
         arr.push(`last_modified="${new Date().valueOf()}"`)
         sql += arr.join(',');

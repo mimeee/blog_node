@@ -35,7 +35,7 @@ exports.newAndSave = async function ({title, tag, desc, markdownFile}) {
  * @param {String} markdownFile 上传文件的信息
  * @return {Promise}
  */
-exports.updated = async function ({title, tag, markdownFile, id}) {
+exports.updated = async function ({title, tag, desc, markdownFile, id}) {
     let o = {};
     let oFile;
     if (markdownFile) {
@@ -47,6 +47,9 @@ exports.updated = async function ({title, tag, markdownFile, id}) {
     }
     if (tag) {
         o.tag = tag;
+    }
+    if (desc) {
+        o.desc = desc;
     }
     if (Object.keys(o).length === 0) {
         return false;

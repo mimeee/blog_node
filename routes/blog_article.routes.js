@@ -2,6 +2,7 @@ var express = require('express');
 var BlogTagRouter = express.Router();
 const formidable = require('formidable');
 const path = require('path');
+const readFile = require('@root/libs/readFile');
 const md2html = require('@root/libs/md2html');
 
 const newAndSave = require('@root/proxy/blog_article_proxy').newAndSave;
@@ -9,6 +10,7 @@ const getCount = require('@root/proxy/blog_article_proxy').getCount;
 const getList = require('@root/proxy/blog_article_proxy').getList;
 const getArticleById = require('@root/proxy/blog_article_proxy').getArticleById;
 const updated = require('@root/proxy/blog_article_proxy').updated;
+const deleteArticle = require('@root/proxy/blog_article_proxy').deleteArticle;
 
 const PARAMS = require('@root/config/blog_article_config.js');
 // const updated = require('@root/proxy/blog_article_proxy').updated;
@@ -37,6 +39,7 @@ BlogTagRouter.post(routePath, async function (req, res) {
             let result = await newAndSave({
                 title: fields.title,
                 tag: fields.tag || "",
+                desc: fields.desc || "",
                 markdownFile: {
                     path: files.markdownFile.path,
                     extname: path.extname(files.markdownFile.name).slice(1)
@@ -83,9 +86,10 @@ BlogTagRouter.get(htmlPath, async function (req, res) {
     }
     let item = JSON.parse(JSON.stringify(await getArticleById(Number(req.params.id))));
     let filePath = PARAMS.UPLOAD_FILE_PATH + '/' + item[0].file;
-    let html = await md2html(filePath);
+    let html = readFile(filePath);
+    // let html = await md2html(filePath);
     res.setHeader('Content-Type','text/html');
-    res.send(html);
+    res.send(html.toString());
     res.end();
 });
 
@@ -115,6 +119,9 @@ BlogTagRouter.put(`${routePath}/:id`, async function(req, res) {
         if (fields.tag) {
             o.tag = fields.tag;
         }
+        if (fields.desc) {
+            o.desc = fields.desc;
+        }
         o.id = req.params.id;
         try {
             let r = await updated(o);
@@ -123,6 +130,18 @@ BlogTagRouter.put(`${routePath}/:id`, async function(req, res) {
             res.status(500).send('Upload Error');
         }
     });
+});
+
+BlogTagRouter.delete(`${routePath}/:id`, async function(req, res) {
+    let id = req.query.id;
+    if (!id) {
+        res.send({errno: 1, msg: 'fail'});
+        res.end();
+    }
+    let r = await deleteArticle(Number(id));
+    r = !(r.affectedRows === 0);
+    res.send({errno: r ? 0 : 1, msg: r ? 'ok' : 'fail'});
+    res.end();
 });
 
 
